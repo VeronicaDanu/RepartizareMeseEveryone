@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vasile & Veronica — Găsește-ți Locul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#1C3325;
+    --forest-deep:#122419;
+    --moss:#3E5C40;
+    --lime:#E0A93E;
+    --lime-dark:#B5852F;
+    --bone:#F2EEE1;
+    --sand:#E5DEC9;
+    --bark:#3C2F22;
+    --ink:#182A1F;
+    --display:'Anton',sans-serif;
+    --body:'Space Grotesk',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bone);color:var(--ink);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+
+  /* ───────────── HERO ───────────── */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--forest-deep);color:var(--bone);padding:4.5rem 1.5rem 5rem;text-align:center;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:
+    radial-gradient(ellipse 90% 55% at 50% 115%,rgba(224,169,62,0.14) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 15% -10%,rgba(62,92,64,0.5) 0%,transparent 60%);
+    pointer-events:none}
+  .hero-frame{position:absolute;inset:14px;border:2px solid rgba(224,169,62,0.28);pointer-events:none}
+  .hero-frame::after{content:'';position:absolute;inset:6px;border:1px solid rgba(242,238,225,0.12)}
+
+  .hero-eyebrow{font-size:0.72rem;font-weight:600;letter-spacing:0.42em;text-transform:uppercase;color:var(--lime);margin-bottom:2.2rem;position:relative}
+  .hero-names{font-family:var(--display);text-transform:uppercase;line-height:0.92;letter-spacing:0.015em;color:var(--bone);position:relative}
+  .hero-names .nm{display:block;font-size:clamp(3.4rem,13vw,8.5rem)}
+  .hero-names .amp{display:block;font-size:clamp(2rem,7vw,4.6rem);color:var(--lime);transform:rotate(-6deg);margin:0.08em 0}
+  .hero-sub{margin-top:2.2rem;display:flex;gap:1rem;align-items:center;justify-content:center;flex-wrap:wrap;font-size:0.8rem;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:rgba(242,238,225,0.85);position:relative}
+  .hero-sub .sep{width:7px;height:7px;background:var(--lime);transform:rotate(45deg);flex-shrink:0}
+
+  .hero-question{margin-top:3.6rem;font-family:var(--display);font-size:clamp(1.5rem,4.5vw,2.4rem);text-transform:uppercase;letter-spacing:0.04em;color:var(--lime);position:relative}
+  .hero-playful{margin-top:0.7rem;font-size:0.95rem;font-weight:400;color:rgba(242,238,225,0.75);max-width:420px;line-height:1.7;position:relative}
+
+  .search-wrap{position:relative;width:min(90%,420px);margin-top:1.8rem;z-index:2}
+  .search-wrap input{width:100%;padding:1rem 1.4rem;font-family:var(--body);font-size:1rem;font-weight:500;background:var(--bone);border:3px solid var(--lime);border-radius:0;color:var(--ink);outline:none;text-align:center;letter-spacing:0.03em;transition:box-shadow 0.25s}
+  .search-wrap input::placeholder{color:#8a8672;font-weight:400}
+  .search-wrap input:focus{box-shadow:0 0 0 4px rgba(224,169,62,0.25)}
+  .search-btn{margin-top:0.8rem;padding:0.9rem 2.6rem;font-family:var(--display);font-size:0.95rem;letter-spacing:0.14em;text-transform:uppercase;background:var(--lime);color:var(--forest-deep);border:none;border-radius:0;cursor:pointer;transition:transform 0.15s,background 0.2s}
+  .search-btn:hover{background:var(--bone);transform:translateY(-2px)}
+  .search-btn:focus-visible,.search-wrap input:focus-visible,.guest-entry:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+
+  .search-result{margin-top:1.2rem;min-height:1.6rem;font-size:0.92rem;color:var(--bone);position:relative;z-index:2;width:min(90%,420px)}
+  .search-result .found{animation:fadeUp 0.45s ease}
+  .search-result .found .fun{color:var(--lime);font-weight:600;letter-spacing:0.02em;font-size:0.92rem}
+  .search-result .matches{margin-top:0.4rem;max-height:132px;overflow-y:auto;padding:0 0.3rem;-webkit-overflow-scrolling:touch}
+  .search-result .found .where{display:block;padding:0.18rem 0;font-size:0.92rem;line-height:1.45;border-bottom:1px solid rgba(242,238,225,0.1)}
+  .search-result .matches .where:last-child{border-bottom:none}
+  .search-result .found .where strong{color:var(--lime);font-weight:700}
+  .search-result .not-found{color:#e8b96a;font-weight:400;animation:fadeUp 0.4s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  .scroll-hint{position:absolute;bottom:2.1rem;left:50%;transform:translateX(-50%);font-size:0.68rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;color:var(--lime);opacity:0.55;cursor:pointer;animation:bounce 2.2s infinite;z-index:2;background:none;border:none;font-family:var(--body)}
+  @keyframes bounce{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
+
+  /* ───────────── TICKER ───────────── */
+  .ticker{background:var(--lime);color:var(--forest-deep);overflow:hidden;white-space:nowrap;border-top:3px solid var(--forest-deep);border-bottom:3px solid var(--forest-deep)}
+  .ticker-track{display:inline-block;padding:0.55rem 0;font-family:var(--display);font-size:0.95rem;letter-spacing:0.18em;text-transform:uppercase;animation:ticker 28s linear infinite}
+  .ticker-track span{margin:0 1.6rem}
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){
+    .ticker-track{animation:none}
+    .scroll-hint{animation:none}
+    html{scroll-behavior:auto}
+  }
+
+  /* ───────────── FLOOR PLAN ───────────── */
+  .floorplan-section{background:var(--bone);padding:4rem 1rem 4rem;display:flex;flex-direction:column;align-items:center}
+  .section-kicker{font-size:0.68rem;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:var(--moss);margin-bottom:0.5rem}
+  .section-label{font-family:var(--display);font-size:clamp(2.2rem,6vw,3.4rem);text-transform:uppercase;color:var(--forest);letter-spacing:0.02em;margin-bottom:2.2rem;text-align:center}
+  .swipe-hint{display:none;font-size:0.62rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--moss);text-align:center;margin-top:0.8rem}
+  @media(max-width:820px){.swipe-hint{display:block}}
+
+  .floor-scroll{width:100%;overflow-x:auto;display:flex;justify-content:center;-webkit-overflow-scrolling:touch}
+  .floor{position:relative;min-width:780px;width:min(96%,900px);background:var(--sand);border:3px solid var(--forest);padding:2.6rem 2rem 1.6rem;flex-shrink:0;box-shadow:8px 8px 0 rgba(28,51,37,0.18)}
+  .floor::before{content:'';position:absolute;inset:8px;border:1px dashed rgba(28,51,37,0.25);pointer-events:none}
+
+  .table-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.4rem;flex-wrap:nowrap;position:relative;padding:0 0.6rem}
+
+  .table-group{display:grid;grid-template-columns:auto auto auto;row-gap:5px;column-gap:0;justify-items:center;align-items:center;flex-shrink:0}
+  .seats-top{grid-column:2;grid-row:1;display:flex;gap:5px;justify-content:center}
+  .seats-bottom{grid-column:2;grid-row:3;display:flex;gap:5px;justify-content:center}
+  .table-body{display:contents}
+  .seats-left{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:5px;justify-content:center;margin-right:5px}
+  .seats-right{grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:5px;justify-content:center;margin-left:5px}
+  .table-group .table-surface{grid-column:2;grid-row:2}
+  .seats-left:empty,.seats-right:empty{display:none}
+
+  .table-surface{background:var(--bone);border:3px solid var(--forest);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.1rem}
+  .table-surface .table-num{font-family:var(--display);font-size:1.7rem;color:var(--forest);line-height:1}
+  .table-surface .table-word{font-size:0.55rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--moss)}
+
+  /* head table */
+  .head-table-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;align-self:flex-start}
+  .head-seats-row{display:flex;gap:5px}
+  .head-surface{background:var(--forest);border:3px solid var(--forest);border-radius:60px;min-width:150px;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .head-surface .table-num{font-family:var(--display);font-size:1.15rem;color:var(--lime);letter-spacing:0.12em;line-height:1}
+  .head-surface .table-word{font-size:0.5rem;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:rgba(242,238,225,0.7);margin-top:0.15rem}
+
+  .seat{width:26px;height:26px;background:var(--bone);border:2.5px solid var(--forest);border-radius:50%;cursor:pointer;transition:transform 0.18s,background 0.18s;position:relative}
+  .seat:hover{background:var(--lime);transform:scale(1.22);z-index:10}
+  .seat .seat-tooltip{display:none;position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);background:var(--forest);color:var(--bone);font-family:var(--body);font-size:0.72rem;font-weight:600;letter-spacing:0.03em;padding:0.32rem 0.65rem;white-space:nowrap;z-index:100;pointer-events:none;box-shadow:3px 3px 0 rgba(28,51,37,0.25)}
+  .seat .seat-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--forest)}
+  .seat:hover .seat-tooltip{display:block}
+
+  .seat.highlighted{background:var(--lime)!important;border-color:var(--forest);z-index:20;transform:scale(1.35);animation:seatPulse 1.4s ease infinite}
+  .seat.highlighted .seat-tooltip{display:block!important;background:var(--forest)}
+  @keyframes seatPulse{0%,100%{box-shadow:0 0 0 0 rgba(224,169,62,0.65)}50%{box-shadow:0 0 0 9px rgba(224,169,62,0)}}
+  @media(prefers-reduced-motion:reduce){.seat.highlighted{animation:none;box-shadow:0 0 0 5px rgba(224,169,62,0.5)}}
+
+  .entrance-area{display:flex;justify-content:flex-start;margin-top:0.6rem;padding-left:0.6rem}
+  .entrance{display:flex;align-items:center;gap:0.7rem;padding:0.5rem 1.6rem;border:2px dashed var(--moss);background:rgba(224,169,62,0.12)}
+  .entrance-arrow{font-size:1rem;color:var(--forest);line-height:1}
+  .entrance-label{font-family:var(--display);font-size:0.72rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--forest)}
+
+  .legend{display:flex;gap:1.8rem;justify-content:center;margin-top:1.8rem;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:0.5rem;font-size:0.74rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--moss)}
+  .legend-swatch{width:16px;height:16px;border-radius:50%;border:2.5px solid var(--forest);flex-shrink:0}
+  .legend-swatch.available{background:var(--bone)}
+  .legend-swatch.yours{background:var(--lime)}
+  .legend-swatch.couple{background:var(--forest)}
+
+  /* ───────────── GUEST LIST ───────────── */
+  .guest-list-section{background:var(--forest);color:var(--bone);padding:4rem 1rem 4.5rem;display:flex;flex-direction:column;align-items:center}
+  .guest-list-section .section-kicker{color:var(--lime)}
+  .guest-list-section .gl-title{font-family:var(--display);font-size:clamp(2rem,5.5vw,3rem);text-transform:uppercase;color:var(--bone);margin-bottom:0.4rem;text-align:center}
+  .gl-sub{font-size:0.82rem;font-weight:400;letter-spacing:0.1em;color:rgba(242,238,225,0.65);margin-bottom:2rem;text-align:center}
+  .guest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0 2.4rem;width:min(95%,820px)}
+  .guest-entry{display:flex;justify-content:space-between;align-items:center;gap:0.8rem;font-size:0.95rem;font-weight:500;color:rgba(242,238,225,0.75);padding:0.45rem 0.2rem;border-bottom:1px solid rgba(242,238,225,0.14);transition:all 0.2s;cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;text-align:left;font-family:var(--body);width:100%}
+  .guest-entry:hover{color:var(--lime);padding-left:0.5rem}
+  .guest-entry .g-table{font-family:var(--display);font-size:0.66rem;letter-spacing:0.14em;color:var(--lime);opacity:0.75;flex-shrink:0;white-space:nowrap}
+  .guest-entry.active{color:var(--lime);font-weight:700;border-bottom-color:var(--lime)}
+
+  footer{text-align:center;padding:2.6rem 1rem;background:var(--forest-deep);border-top:3px solid var(--lime)}
+  footer .ft-names{font-family:var(--display);font-size:1.4rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--bone);margin-bottom:0.3rem}
+  footer .ft-date{font-size:0.62rem;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--lime)}
+
+  /* ───────────── MOBILE ───────────── */
+  @media(max-width:820px){
+    .floor-scroll{justify-content:flex-start;padding:0 0.5rem}
+  }
+  @media(max-width:480px){
+    .hero{min-height:100svh;padding:3.5rem 1.2rem 4.5rem}
+    .hero-frame{inset:10px}
+    .hero-eyebrow{font-size:0.6rem;letter-spacing:0.3em;margin-bottom:1.6rem}
+    .hero-sub{font-size:0.66rem;letter-spacing:0.16em;gap:0.7rem}
+    .hero-question{margin-top:2.6rem}
+    .hero-playful{font-size:0.85rem;max-width:320px}
+    .search-wrap{width:94%}
+    .search-btn{padding:0.85rem 2.2rem;font-size:0.88rem}
+    .search-result{font-size:0.82rem;padding:0}
+    .search-result .found .fun{font-size:0.8rem}
+    .search-result .found .where{font-size:0.84rem;padding:0.14rem 0}
+    .search-result .matches{max-height:104px}
+    .scroll-hint{font-size:0.58rem;bottom:1.2rem}
+    .floorplan-section{padding:2.8rem 0.5rem 3rem}
+    .floor{min-width:780px;padding:2.2rem 1.4rem 1.4rem}
+    .legend{gap:1rem}
+    .legend-item{font-size:0.62rem}
+    .guest-list-section{padding:2.8rem 0.9rem 3.4rem}
+    .guest-grid{grid-template-columns:1fr;width:100%}
+    .guest-entry{font-size:0.92rem;padding:0.55rem 0.2rem}
+  }
+  @media(pointer:coarse){
+    .seat{width:30px;height:30px}
+    .guest-entry{min-height:44px}
+    .search-btn{min-height:46px}
+    .search-wrap input{min-height:50px}
+  }
+  @supports(-webkit-touch-callout:none){
+    .search-wrap input{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-frame" aria-hidden="true"></div>
+  <div class="hero-eyebrow">Ne bucurăm că ești aici</div>
+  <h1 class="hero-names">
+    <span class="nm">Vasile</span>
+    <span class="amp">&amp;</span>
+    <span class="nm">Veronica</span>
+  </h1>
+  <div class="hero-sub">
+    <span>17 Iulie 2026</span>
+    <span class="sep" aria-hidden="true"></span>
+    <span>Ora 18:00</span>
+    <span class="sep" aria-hidden="true"></span>
+    <span>Murmur de Izvor</span>
+  </div>
+
+  <div class="hero-question">Unde stai?</div>
+  <p class="hero-playful">Promitem că ți-am ales bine vecinii.<br>Scrie-ți numele și vezi singur.</p>
+  <div class="search-wrap">
+    <input type="text" id="guestInput" placeholder="Numele tău complet..." autocomplete="off">
+    <button class="search-btn" onclick="searchGuest()">Arată-mi locul</button>
+  </div>
+  <div class="search-result" id="searchResult" aria-live="polite"></div>
+  <button class="scroll-hint" id="scrollHint" onclick="document.querySelector('.floorplan-section').scrollIntoView({behavior:'smooth'})">↓ Vezi harta meselor ↓</button>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<section class="floorplan-section">
+  <div class="section-kicker">Murmur de Izvor · Drăsliceni</div>
+  <h2 class="section-label">Harta meselor</h2>
+  <div class="floor-scroll"><div class="floor" id="floorPlan"></div></div>
+  <div class="swipe-hint">← Glisează pentru a vedea tot →</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch available"></div> Loc invitat</div>
+    <div class="legend-item"><div class="legend-swatch yours"></div> Locul tău</div>
+    <div class="legend-item"><div class="legend-swatch couple"></div> Masa mirilor</div>
+  </div>
+</section>
+
+<section class="guest-list-section">
+  <div class="section-kicker">91 de oameni dragi</div>
+  <h2 class="gl-title">Toți invitații</h2>
+  <div class="gl-sub">Apasă pe un nume și vezi unde stă</div>
+  <div class="guest-grid" id="guestGrid"></div>
+</section>
+
+<footer>
+  <div class="ft-names">Vasile &amp; Veronica</div>
+  <div class="ft-date">17 Iulie 2026 · Pupici</div>
+</footer>
+
+<script>
+/* Ordinea locurilor în fiecare masă: sus (stânga→dreapta), stânga (sus→jos), dreapta (sus→jos), jos (stânga→dreapta) */
+const tables=[
+  {id:"T1",label:"1",row:"top",capacity:{top:4,left:3,right:2,bottom:4},surfaceW:170,surfaceH:110,guests:[
+    "Denis Danu","Laura Danu","Victoria Danu","Vasile Danu",
+    "Cristian Danu","Vera Danu","Iacob Danu",
+    "Tatiana Danu","Grigore Danu",
+    "Tudor Danu","Irina Danu","Victoria Crasnuha","Mihail Bulicanu"]},
+  {id:"TM",label:"Mirii",row:"top",type:"head",guests:["Veronica Danu","Vasile Vasluian"]},
+  {id:"T2",label:"2",row:"top",capacity:{top:5,left:2,right:3,bottom:5},surfaceW:170,surfaceH:110,guests:[
+    "Nadejda Guțu","Anatolie Guțu","Ion Cojocari","Maria Cojocari","Aurica Daniliuc",
+    "Vasile Lungu","Natalia Lungu",
+    "Nina Ignat","Anatolie Ignat","Afanasie Lungu",
+    "Silvia Lungu","Ion Lungu","Vasile Vasluian","Nina Vasluian","Galina Lungu"]},
+  {id:"T3",label:"3",row:"middle",capacity:{top:7,left:3,right:0,bottom:7},surfaceW:230,surfaceH:110,guests:[
+    "Vera Zubcu","Petru Zubcu","Valeriu Andronachi","Galina Andronachi","Larisa Negură","Elena Robu","Ion Robu",
+    "Uliana Podaru","Anastasia Tertea","Cătălina Dînga",
+    "Margareta Levițchi","Vasile Matasari","Valentina Matasari","Maria Danu","Serghei Danu","Tatiana Bulicanu","Valeriu Bulicanu"]},
+  {id:"T4",label:"4",row:"middle",capacity:{top:7,left:0,right:3,bottom:7},surfaceW:230,surfaceH:110,guests:[
+    "Iulia Nour","Vadim Vasluian","Ion Guțu","Roxana Apetrei","Ludmila Adajii","Alexei Adajii","Natalia Adajii",
+    "Vasile Adajii","Nicoleta Nederita","Diana Nederita",
+    "Ana Calpacci","Ion Lungu","Corneliu Pelin","Ionela Pelin","Natalia Pîslaru","Sergiu Nederita","Tatiana Nederita"]},
+  {id:"T5",label:"5",row:"bottom",capacity:{top:6,left:2,right:0,bottom:6},surfaceW:200,surfaceH:110,guests:[
+    "Inga Trifan","Ahmed Zaki","Iulia Lungu","Mihail Lungu","Dragoș Străinu","Olga Sturza",
+    "Cătălin Dorin David","Natalia Mocanu",
+    "Ecaterina Chicu","Victor Glavan","Roman Para","Marina Para","Mircea Molișteanu","Valeria Junghina"]},
+  {id:"T6",label:"6",row:"bottom",capacity:{top:6,left:0,right:2,bottom:5},surfaceW:200,surfaceH:110,guests:[
+    "Denis Nicorici","Vladimir Scutelnic","Ruslana Nahorna","Eugen Crețu","Carolina Vacarciuc","Dumitru Timofti",
+    "Eugen Pădureț","Maria Curcan",
+    "Corina Amarii","Alexandrina Matasari","Mihai Mîndrescu","Artur Curnicov","Maria Curnicov"]}
+];
+
+/* poate exista același nume la mese diferite → păstrăm liste */
+const guestMap={};
+tables.forEach(t=>{t.guests.forEach((n,i)=>{
+  const k=n.toLowerCase();
+  if(!guestMap[k])guestMap[k]=[];
+  guestMap[k].push({tableId:t.id,tableLabel:t.type==='head'?'Masa Mirilor':'Masa '+t.label,seatIndex:i,name:n,isHead:t.type==='head'});
+})});
+
+function buildSeat(guest,tableId,idx){
+  const d=document.createElement('div');d.className='seat';
+  d.dataset.guest=(guest||'').toLowerCase();d.dataset.table=tableId;d.dataset.idx=idx;
+  const tip=document.createElement('div');tip.className='seat-tooltip';tip.textContent=guest||'Liber';
+  d.appendChild(tip);
+  d.addEventListener('click',()=>{if(guest){document.getElementById('guestInput').value=guest;searchGuest()}});
+  return d;
+}
+
+function renderRegularTable(t){
+  const g=document.createElement('div');g.className='table-group';g.id='table-'+t.id;
+  const{top,right,bottom,left}=t.capacity;let gi=0;
+  const tr=document.createElement('div');tr.className='seats-top';
+  for(let i=0;i<top;i++)tr.appendChild(buildSeat(t.guests[gi]||null,t.id,gi++));g.appendChild(tr);
+  const body=document.createElement('div');body.className='table-body';
+  const lc=document.createElement('div');lc.className='seats-left';
+  for(let i=0;i<left;i++)lc.appendChild(buildSeat(t.guests[gi]||null,t.id,gi++));body.appendChild(lc);
+  const s=document.createElement('div');s.className='table-surface';s.style.width=t.surfaceW+'px';s.style.height=t.surfaceH+'px';
+  s.innerHTML='<span class="table-num">'+t.label+'</span><span class="table-word">Masa</span>';
+  body.appendChild(s);
+  const rc=document.createElement('div');rc.className='seats-right';
+  for(let i=0;i<right;i++)rc.appendChild(buildSeat(t.guests[gi]||null,t.id,gi++));body.appendChild(rc);g.appendChild(body);
+  const br=document.createElement('div');br.className='seats-bottom';
+  for(let i=0;i<bottom;i++)br.appendChild(buildSeat(t.guests[gi]||null,t.id,gi++));g.appendChild(br);return g;
+}
+
+function renderHeadTable(t){
+  const wrap=document.createElement('div');wrap.className='head-table-wrap';wrap.id='table-'+t.id;
+  const seatsRow=document.createElement('div');seatsRow.className='head-seats-row';
+  seatsRow.appendChild(buildSeat(t.guests[0],t.id,0));
+  seatsRow.appendChild(buildSeat(t.guests[1],t.id,1));
+  wrap.appendChild(seatsRow);
+  const s=document.createElement('div');s.className='head-surface';
+  s.innerHTML='<span class="table-num">MIRII</span><span class="table-word">Vasile & Veronica</span>';
+  wrap.appendChild(s);
+  return wrap;
+}
+
+function renderFloor(){
+  const f=document.getElementById('floorPlan');f.innerHTML='';
+  ['top','middle','bottom'].forEach(row=>{
+    const r=document.createElement('div');r.className='table-row';
+    tables.filter(t=>t.row===row).forEach(t=>{
+      r.appendChild(t.type==='head'?renderHeadTable(t):renderRegularTable(t));
+    });
+    f.appendChild(r);
+  });
+  const e=document.createElement('div');e.className='entrance-area';
+  e.innerHTML='<div class="entrance"><span class="entrance-label">Intrare</span><span class="entrance-arrow">→</span></div>';
+  f.appendChild(e);
+}
+
+function renderGuestList(){
+  const g=document.getElementById('guestGrid');g.innerHTML='';
+  tables.forEach(t=>{t.guests.forEach(n=>{
+    const e=document.createElement('button');e.className='guest-entry';e.dataset.guest=n.toLowerCase();e.dataset.table=t.id;
+    const tl=t.type==='head'?'Mirii':'Masa '+t.label;
+    e.innerHTML='<span>'+n+'</span><span class="g-table">'+tl+'</span>';
+    e.addEventListener('click',()=>{document.getElementById('guestInput').value=n;searchGuest();document.querySelector('.floorplan-section').scrollIntoView({behavior:'smooth'})});
+    g.appendChild(e);
+  })});
+}
+
+const msgs=[
+  "Ai noroc, ai cu cine bea un 50.",
+  "Loc bun. Vecini verificați personal.",
+  "Te-am găsit! Nu întârzia la sarmale.",
+  "Confirmat: stai la masa oamenilor de treabă.",
+  "Loc premium, cu vedere la ringul de dans."
+];
+
+function highlightSeat(tableId,seatIndex){
+  const seats=document.querySelectorAll('.seat[data-table="'+tableId+'"]');
+  if(seats[seatIndex])seats[seatIndex].classList.add('highlighted');
+  return seats[seatIndex];
+}
+
+function searchGuest(){
+  const q=document.getElementById('guestInput').value.trim().toLowerCase();
+  const r=document.getElementById('searchResult');
+  document.querySelectorAll('.seat.highlighted').forEach(s=>s.classList.remove('highlighted'));
+  document.querySelectorAll('.guest-entry.active').forEach(s=>s.classList.remove('active'));
+  if(!q){r.innerHTML='';return}
+  const keys=Object.keys(guestMap).filter(n=>n.includes(q));
+  if(!keys.length){r.innerHTML='<div class="not-found">Hmm, nu te găsim... Verifică ortografia sau caută în lista de jos.</div>';return}
+  let entries=[];
+  keys.forEach(k=>{entries=entries.concat(guestMap[k])});
+  let firstSeat=null,html='<div class="found">';
+  if(entries.length===1){
+    const fun=msgs[Math.floor(Math.random()*msgs.length)];
+    html+='<span class="fun">'+fun+'</span>';
+  }else{
+    html+='<span class="fun">'+entries.length+' invitați găsiți pentru „'+q+'”:</span>';
+  }
+  html+='<div class="matches">';
+  entries.forEach(info=>{
+    const tl=info.isHead?'Masa Mirilor 💍':info.tableLabel;
+    html+='<span class="where"><strong>'+info.name+'</strong> — '+tl+', Loc '+(info.seatIndex+1)+'</span>';
+    const s=highlightSeat(info.tableId,info.seatIndex);
+    if(!firstSeat)firstSeat=s;
+    const ge=document.querySelector('.guest-entry[data-guest="'+info.name.toLowerCase()+'"][data-table="'+info.tableId+'"]');
+    if(ge)ge.classList.add('active');
+  });
+  html+='</div></div>';
+  r.innerHTML=html;
+  if(firstSeat){setTimeout(()=>{document.querySelector('.floorplan-section').scrollIntoView({behavior:'smooth'});setTimeout(()=>{firstSeat.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})},450)},350)}
+}
+
+function renderTicker(){
+  const items='<span>Vasile & Veronica</span><span>◆</span><span>17.07.2026</span><span>◆</span><span>Murmur de Izvor</span><span>◆</span><span>Găsește-ți locul</span><span>◆</span>';
+  document.getElementById('tickerTrack').innerHTML=items.repeat(6);
+}
+
+document.getElementById('guestInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchGuest()});
+renderFloor();renderGuestList();renderTicker();
+</script>
+</body>
+</html>
