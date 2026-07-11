@@ -229,7 +229,7 @@
 </section>
 
 <section class="guest-list-section">
-  <div class="section-kicker">91 de oameni dragi</div>
+  <div class="section-kicker">90 de oameni dragi</div>
   <h2 class="gl-title">Toți invitații</h2>
   <div class="gl-sub">Apasă pe un nume și vezi unde stă</div>
   <div class="guest-grid" id="guestGrid"></div>
@@ -262,10 +262,10 @@ const tables=[
     "Iulia Nour","Vadim Vasluian","Ion Guțu","Roxana Apetrei","Ludmila Adajii","Alexei Adajii","Natalia Adajii",
     "Vasile Adajii","Nicoleta Nederita","Diana Nederita",
     "Ana Calpacci","Ion Lungu","Corneliu Pelin","Ionela Pelin","Natalia Pîslaru","Sergiu Nederita","Tatiana Nederita"]},
-  {id:"T5",label:"5",row:"bottom",capacity:{top:6,left:2,right:0,bottom:6},surfaceW:200,surfaceH:110,guests:[
+  {id:"T5",label:"5",row:"bottom",capacity:{top:6,left:2,right:0,bottom:5},surfaceW:200,surfaceH:110,guests:[
     "Inga Trifan","Ahmed Zaki","Iulia Lungu","Mihail Lungu","Dragoș Străinu","Olga Sturza",
-    "Cătălin Dorin David","Natalia Mocanu",
-    "Ecaterina Chicu","Victor Glavan","Roman Para","Marina Para","Mircea Molișteanu","Valeria Junghina"]},
+    "Natalia Mocanu","Cătălin Dorin David",
+    "Victor Glavan","Roman Para","Marina Para","Mircea Molișteanu","Valeria Junghina"]},
   {id:"T6",label:"6",row:"bottom",capacity:{top:6,left:0,right:2,bottom:5},surfaceW:200,surfaceH:110,guests:[
     "Denis Nicorici","Vladimir Scutelnic","Ruslana Nahorna","Eugen Crețu","Carolina Vacarciuc","Dumitru Timofti",
     "Eugen Pădureț","Maria Curcan",
@@ -363,7 +363,9 @@ function searchGuest(){
   document.querySelectorAll('.seat.highlighted').forEach(s=>s.classList.remove('highlighted'));
   document.querySelectorAll('.guest-entry.active').forEach(s=>s.classList.remove('active'));
   if(!q){r.innerHTML='';return}
-  const keys=Object.keys(guestMap).filter(n=>n.includes(q));
+  const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const tokens=norm(q).split(/\s+/).filter(Boolean);
+  const keys=Object.keys(guestMap).filter(n=>{const nn=norm(n);return tokens.every(t=>nn.includes(t))});
   if(!keys.length){r.innerHTML='<div class="not-found">Hmm, nu te găsim... Verifică ortografia sau caută în lista de jos.</div>';return}
   let entries=[];
   keys.forEach(k=>{entries=entries.concat(guestMap[k])});
